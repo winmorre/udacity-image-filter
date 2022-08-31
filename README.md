@@ -48,4 +48,6 @@ Add your own domain name and have it point to the running services (try adding a
 > !NOTE: Domain names are not included in AWS’ free tier and will incur a cost.
 
 
-#### URL http://udagram-image-filter-dev222222.us-east-1.elasticbeanstalk.com/
+ [Working url](http://udagram-image-filter-dev222222.us-east-1.elasticbeanstalk.com/)
+
+[Application testing url](http://udagram-image-filter-dev222222.us-east-1.elasticbeanstalk.com/filteredimage?image_url=https://images.pexels.com/photos/12936834/pexels-photo-12936834.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)
