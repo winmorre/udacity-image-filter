@@ -1,7 +1,7 @@
 import express from 'express';
 import { Request, Response } from 'express';
 import bodyParser from 'body-parser';
-import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import {filterImageFromURL, deleteLocalFiles,isUrl} from './util/util';
 
 (async () => {
 
@@ -30,7 +30,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
 
   /**************************************************************************** */
   app.get("/filteredimage/", async (req:Request, res:Response)=> {
-    let imageUrl = req.query
+    let imageUrl = req.query.image_url
     const filteredImageList:Array<string> = []
 
     // check if imageUrl is valid
@@ -38,17 +38,27 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       res.status(404).send(`Image url: ${imageUrl} can't be found.`)
     }
 
-    // Filter the image
-    const filteredImage =  await filterImageFromURL(imageUrl)
-    // append filtered image to filteredImageList
-    filteredImageList.push(filteredImage)
+    // check if imageUrl is a valid
+    if(!isUrl(imageUrl.toString())){
+      res.status(400).send(`Bad Request: Image url ${imageUrl} is not valid`)
+    }
 
-    // send filtered image response
-    res.sendFile(filteredImage)
 
-    res.on('finish',async()=>{
-      await deleteLocalFiles(filteredImageList)
-    })
+   try{
+     // Filter the image
+     const filteredImage =  await filterImageFromURL(imageUrl.toString())
+     // append filtered image to filteredImageList
+     filteredImageList.push(filteredImage)
+
+     // send filtered image response
+     res.sendFile(filteredImage)
+
+     res.on('finish',async()=>{
+       await deleteLocalFiles(filteredImageList)
+     })
+   }catch (e) {
+     res.status(400).send(`Bad Request: An error occurred `)
+   }
 
   })
 
